@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 // Modules
 import { DatabaseModule } from 'src/core/database/database.module';
+import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserModule } from 'src/modules/user/user.module';
 
 // Middlewares
@@ -14,6 +15,7 @@ import LogsMiddleware from 'src/middleware/logs.middleware';
   
     // Custom Modules
     DatabaseModule,
+    AuthModule,
     UserModule
   ],
   controllers: [],

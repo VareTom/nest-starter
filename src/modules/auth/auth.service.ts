@@ -39,7 +39,7 @@ export class AuthService {
         email: userCreateInput.email
       }
     });
-    if (!user) throw new HttpException('User not found or not confirmed', HttpStatus.BAD_REQUEST);
+    if (!user) throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
 
     const isValid = await bcrypt.compare(userCreateInput.password, user.password);
     if (!isValid) throw new HttpException('Password not match', HttpStatus.BAD_REQUEST);
@@ -60,14 +60,14 @@ export class AuthService {
         email: registerInput.email.toLowerCase()
       }
     })
-    if (!user) throw new HttpException('User not found!', HttpStatus.BAD_REQUEST);
+    if (user) throw new HttpException('Email already used by an user!', HttpStatus.BAD_REQUEST);
   
-    user.password = await bcrypt.hash(registerInput.password, 10);
-    await user.save();
+    registerInput.password = await bcrypt.hash(registerInput.password, 10);
+    const createdUser = await this.userRepository.create(registerInput);
     
-    const jwt = this.jwt.sign({user: user});
+    const jwt = this.jwt.sign({user: createdUser});
     if (!jwt) throw new HttpException('Token creation failed', HttpStatus.INTERNAL_SERVER_ERROR);
     
-    return {token: jwt, user: new UserOutputDto(user)};
+    return {token: jwt, user: new UserOutputDto(createdUser)};
   }
 }
