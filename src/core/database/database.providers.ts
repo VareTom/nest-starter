@@ -1,10 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
+import { Logger } from '@nestjs/common';
 
 // Config
-import { databaseConfig } from './database.config';
+import configuration from 'src/core/config/configuration';
 
 // Constants
-import { SEQUELIZE, DEVELOPMENT, PRODUCTION } from '../constants';
+import { DEVELOPMENT, SEQUELIZE } from '../constants';
 
 // Entities
 import { User } from 'src/core/entities/user.entity';
@@ -12,22 +13,17 @@ import { User } from 'src/core/entities/user.entity';
 export const databaseProviders = [{
   provide: SEQUELIZE,
   useFactory: async () => {
-    let config;
-    switch (process.env.NODE_ENV) {
-      case DEVELOPMENT:
-        config = databaseConfig.development;
-        break;
-      case PRODUCTION:
-        config = databaseConfig.production;
-        break;
-      default:
-        config = databaseConfig.development;
-    }
-    const sequelize = new Sequelize(config);
+    const dbConfig = configuration()[process.env.NODE_ENV].db;
+    const sequelize = new Sequelize(dbConfig);
     sequelize.addModels([
       User
     ]);
-    await sequelize.sync({alter: true});
+    if (process.env.NODE_ENV === DEVELOPMENT) {
+      await sequelize.sync({alter: true})
+        .then(() => {
+          Logger.log(`Database models is synchronized with MySQL.`, 'Sequelize');
+        });
+    }
     return sequelize;
   },
 }];

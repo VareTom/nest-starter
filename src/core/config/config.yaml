@@ -1,0 +1,13 @@
+development:
+  db:
+    host: 'localhost'
+    port: '3306'
+    username: 'root'
+    password: ''
+    dialect: 'mysql'
+    logging: false
+    database: 'nest-starter'
+    define:
+      createdAt: 'created_at'
+      updatedAt: 'updated_at'
+      deletedAt: 'deleted_at'

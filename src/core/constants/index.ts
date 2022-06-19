@@ -1,5 +1,5 @@
-export const SEQUELIZE = 'SEQUELIZE';
-export const DEVELOPMENT = 'development';
-export const PRODUCTION = 'production';
+export const SEQUELIZE: string = 'SEQUELIZE';
+export const DEVELOPMENT: string = 'development';
+export const PRODUCTION: string = 'production';
 
-export const USER_REPOSITORY = 'USER_REPOSITORY';
+export const USER_REPOSITORY: string = 'USER_REPOSITORY';
